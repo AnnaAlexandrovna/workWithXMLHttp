@@ -1,0 +1,49 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Send task</title>
+</head>
+<body>
+	<button id='but1'  onclick = "load()" >Generate and send string</button>
+<script>
+
+	function load(){
+		document.body.innerHTML = "Start generate string";
+		let str = '';
+		let counter = 0;
+		let len = 1000;
+		let promise = new Promise(function(resolve,reject){
+			let intervaiId = setInterval(()=>{
+				counter++;
+				str =str + "s";
+				document.body.innerHTML = "Start generate string from " + len+  " symbols: string length - " + counter;
+				if(counter== len){
+					counter=0;
+					resolve(str);
+					clearInterval(intervaiId);
+				}
+			},0);
+		});
+
+		promise.then((str)=>{
+		 	document.body.innerHTML = "String generated.Start sending.";
+		 	let xhr = new XMLHttpRequest();
+			xhr.open('POST', 'http://test1.ru/large.html', true);
+			xhr.send(str);
+			xhr.upload.onprogress = function(event) {
+			  document.body.innerHTML = `Send ${event.loaded} from ${event.total}`;
+			};
+
+			xhr.onprogress = function(event) { 
+				console.log(event);
+			  document.body.innerHTML= `Upload ${event.loaded} from ${event.total}`;
+			};
+
+		})
+
+		
+	}
+
+</script>
+</body>
+</html>
